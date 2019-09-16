@@ -107,6 +107,11 @@ always @(posedge clk or posedge rst)
 reg autorefresh_cycle;
 reg [1:0] refresh_sr;
 
+reg [31:0] sdram_in;
+
+always @(posedge clk)
+    data_read <= sdram_in;
+
 always @(posedge clk)
     if( rst ) begin
         // initialization of SDRAM
@@ -242,14 +247,15 @@ always @(posedge clk)
         end
         3'd3: begin
             if( read_cycle) begin
-                data_read[31:16] <= SDRAM_DQ;
+                //data_read[31:16] <= SDRAM_DQ;
+                sdram_in[15:0] <= SDRAM_DQ;
             end
             SDRAM_CMD <= CMD_NOP;
         end
         3'd4: begin
             if( read_cycle) begin
-                data_read[15: 0] <= data_read[31:16];
-                data_read[31:16] <= SDRAM_DQ;
+                //data_read[15: 0] <= data_read[31:16];
+                sdram_in[31:16] <= SDRAM_DQ;
                 data_rdy         <= 1'b1;
             end
             SDRAM_CMD <= CMD_NOP;
