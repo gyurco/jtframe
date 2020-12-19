@@ -108,6 +108,9 @@ localparam CONF_STR = {
     `ifdef CORE_OSD
         `CORE_OSD
     `endif
+    `ifdef CORE_NVRAM_SIZE
+        "R",`CORE_NVRAM_SIZE,",Save NVRAM;",
+    `endif
     "T0,RST;",
     "V,patreon.com/topapate;"
 };
@@ -123,7 +126,9 @@ wire          loop_rst;
 wire          downloading, dwnld_busy;
 wire [24:0]   ioctl_addr;
 wire [ 7:0]   ioctl_data;
+wire [ 7:0]   ioctl_data_out;
 wire          ioctl_wr;
+wire          ioctl_ram;
 
 wire [ 1:0]   sdram_wrmask, sdram_bank;
 wire          sdram_rnw;
@@ -285,7 +290,9 @@ u_frame(
     // ROM
     .ioctl_addr     ( ioctl_addr     ),
     .ioctl_data     ( ioctl_data     ),
+    .ioctl_data_out ( ioctl_data_out ),
     .ioctl_wr       ( ioctl_wr       ),
+    .ioctl_ram      ( ioctl_ram      ),
     .prog_addr      ( prog_addr      ),
     .prog_data      ( prog_data      ),
     .prog_mask      ( prog_mask      ),
@@ -430,7 +437,9 @@ u_game(
     // PROM programming
     .ioctl_addr  ( ioctl_addr     ),
     .ioctl_data  ( ioctl_data     ),
+    .ioctl_data_out(ioctl_data_out),
     .ioctl_wr    ( ioctl_wr       ),
+    .ioctl_ram   ( ioctl_ram      ),
     .prog_addr   ( prog_addr      ),
     .prog_data   ( prog_data      ),
     .prog_mask   ( prog_mask      ),
